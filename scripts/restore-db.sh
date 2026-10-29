@@ -116,7 +116,7 @@ log "Backup de segurança: $(basename "$SEGURANCA")"
 # Recria o schema vazio em vez de --clean: assim não sobra nenhuma tabela criada
 # depois do backup (que faria as migrations do passo 6 falharem com "already exists")
 log "5/7 Restaurando o banco"
-psql_prod "-c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;'" > /dev/null
+psql_prod "-q -c 'SET client_min_messages = warning; DROP SCHEMA public CASCADE; CREATE SCHEMA public;'"
 docker exec -i "$POSTGRES" sh -c \
   'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --no-owner --exit-on-error --single-transaction' \
   < "$ARQUIVO"
